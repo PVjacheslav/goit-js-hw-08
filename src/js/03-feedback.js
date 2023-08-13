@@ -1,37 +1,33 @@
-const throttle = require('lodash.throttle');
 import throttle from "lodash.throttle";
-import '../css/common.css';
-import '../css/03-feedback.css';
 
 const STORAGE_KEY = "feedback-form-state";
 const feedback = {
     form: document.querySelector('.feedback-form'),
-    input: document.querySelector('.input'),
-    textarea: document.querySelector('.textarea'),
+    input: document.querySelector('input[name="email"]'),
+    textarea: document.querySelector('textarea[name="message"]'),
 }
+let formData = {};
 newFormOutput();
-
-const formData = {};
-feedback.form.addEventListener('input', throttle(hendlerFormOut, 500));
-function hendlerFormOut (evt) {
-    formData[evt.target.name] = evt.target.valua;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData))
+feedback.form.addEventListener('input', throttle(onInputForm, 500));
+function onInputForm(evt) {
+    formData[evt.target.name] = evt.target.value;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
 }
-
-feedback.form.addEventListener('submit', (evt) =>{
+feedback.form.addEventListener('submit', (evt) => {
     evt.preventDefault();
-
-    if(email.value === "" || message.value === ""){
+    if (feedback.input.value === "" || feedback.textarea.value === "") {
         return alert("Всі поля повинні бути заповнені!");
     }
     localStorage.removeItem(STORAGE_KEY);
     feedback.form.reset();
+    formData = {};
 });
 
 function newFormOutput() {
-    const savedMessage =JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if(savedMessage) {
-        feedback.input.value = savedMessage.email;
-        feedback.textarea.value = savedMessage.message;
+    const savedMessage = localStorage.getItem(STORAGE_KEY);
+    if (savedMessage) {
+        formData = JSON.parse(savedMessage) || {};
+        feedback.input.value = formData.email || '';
+        feedback.textarea.value = formData.message || '';
     }
 }
