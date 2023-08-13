@@ -1,3 +1,4 @@
+const throttle = require('lodash.throttle');
 import throttle from "lodash.throttle";
 import '../css/common.css';
 import '../css/03-feedback.css';
@@ -20,14 +21,17 @@ function hendlerFormOut (evt) {
 feedback.form.addEventListener('submit', (evt) =>{
     evt.preventDefault();
 
+    if(email.value === "" || message.value === ""){
+        return alert("Всі поля повинні бути заповнені!");
+    }
     localStorage.removeItem(STORAGE_KEY);
-    evt.currentTarget.reset();
+    feedback.form.reset();
 });
 
 function newFormOutput() {
     const savedMessage =JSON.parse(localStorage.getItem(STORAGE_KEY));
     if(savedMessage) {
-        feedback.input.valua = savedMessage.email;
-        feedback.textarea.valua = savedMessage.message;
+        feedback.input.value = savedMessage.email;
+        feedback.textarea.value = savedMessage.message;
     }
 }
